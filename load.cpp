@@ -98,7 +98,13 @@ void Array2D::out(char *fn){
 	FILE *fp=fopen(fn,"w");
 
 	int j;
+	fprintf(fp,"# Nx, Ny\n");
 	fprintf(fp,"%d,%d\n",Nx,Ny);
+	fprintf(fp,"# Xa[0:1]\n");
+	fprintf(fp,"%lf,%lf\n",Xa[0],Xa[1]);
+	fprintf(fp,"# dx[0:1]\n");
+	fprintf(fp,"%lf,%lf\n",dx[0],dx[1]);
+	fprintf(fp,"# amp (for x{ for y})\n");
 	for( int i=0;i<Nx;i++){
 	for( j=0;j<Ny;j++){
 		fprintf(fp,"%le\n",A[i][j]);
@@ -225,6 +231,9 @@ Array2D Array3D::proj(){
 		Bdat.A[i][j]/=Nx;
 	}
 	}
+	Bdat.set_Xa(Xa[1],Xa[2]);
+	Bdat.set_dx(dx[1],dx[2]);
+	Bdat.set_Wd();
 	return(Bdat);
 };
 void Array3D::CorrY(){
@@ -288,6 +297,17 @@ void Array3D::CorrX(){
 	Tm.out(fname);
 	strcpy(fname,"amax2.out");
 	Amp.out(fname);
+};
+void Array3D::Butterworth(double cx, double cy){
+	Wv1D wv1;
+	int i,j;
+	for(i=0;i<Nx;i++){
+	for(j=0;j<Ny;j++){
+		awv.amp=A[i][j];
+		awv.Butterworth(0.0,5.0);
+	}
+	}
+
 };
 //------------------------------------------------------------
 Wv1D::Wv1D(){
@@ -414,6 +434,19 @@ void Wv1D::out_amp(char *fn){
 	for(int i=0;i<Nt;i++) fprintf(fp,"%le\n",amp[i]);
 
 	fclose(fp);
+};
+void Wv1D::Butterworth(double tb, double Tw_6dB){
+
+	int p=4;
+	double tt;
+	double t0=Tw_6dB*0.5;
+	double arg;
+	for(int i=0; i<Nt;i++){
+		tt=t1+dt*i;
+		arg=(tt-tb)/t0;
+		arg=pow(arg,p);
+		amp[i]/=(1.+arg);
+	};
 };
 //------------------------------------------------------------
 Wv1D corr(Wv1D wv1, Wv1D wv2, double *tmax, double *Amax){
