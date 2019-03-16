@@ -1,0 +1,5 @@
+g++ -c fft.cpp
+g++ -c load.cpp
+
+g++ -o load load.o fft.o
+rm *.o
