@@ -31,7 +31,7 @@ class Wv1D{
 		double L2(double t1,double t2);
 		double max(double t1,double t2);
 		void Butterworth(double tb, double Tw_6dB);
-		void gdelay();
+		double gdelay();
 	private:
 	protected:
 };
@@ -85,8 +85,8 @@ class Array3D{
 		void CorrX();
 		void Lp(int p); 	// p=0 for L_inf, p=2 for L2
 		Array2D proj();
-		//void proj();
 		void Butterworth(double cx, double cy);
+		Array2D gdelay(double cy);
 	private:
 	protected:
 };

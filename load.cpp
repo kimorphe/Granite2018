@@ -67,6 +67,7 @@ Array2D::Array2D(int nx,int ny){
 Array2D::Array2D(){
 	Nx=1;
 	Ny=1;
+	ndat=Nx*Ny;
 	A2=(double *)malloc(sizeof(double)*ndat);
 	A=(double **)malloc(sizeof(double*)*Nx);
 	for(int i=0;i<2;i++){
@@ -299,7 +300,6 @@ void Array3D::CorrX(){
 	Amp.out(fname);
 };
 void Array3D::Butterworth(double cx, double cy){
-	Wv1D wv1;
 	int i,j;
 	double x,y;
 	double tb;
@@ -315,6 +315,30 @@ void Array3D::Butterworth(double cx, double cy){
 	}
 
 };
+Array2D Array3D::gdelay( double cy){
+	Array2D Tg(Nx,Ny); 
+	Tg.set_Xa(Xa[0],Xa[1]);
+	Tg.set_dx(dx[0],dx[1]);
+	Tg.set_Wd();
+	int i,j;
+	double x,y,tb,tgb;
+	double Tw_6dB=3.0,dlt=12.5;
+	for(i=0;i<Nx;i++){
+		printf("i=%d\n",i);
+		x=Xa[0]+dx[0]*i;
+	for(j=0;j<Ny;j++){
+		y=Xa[1]+dx[1]*j;
+		tb=y/cy+dlt+Tw_6dB*0.5;
+		awv.amp=A[i][j];
+		awv.Butterworth(tb,Tw_6dB);
+		Tg.A[i][j]=awv.gdelay();
+		awv.fft_stat=0;
+	}
+	}
+	puts("done");
+	return(Tg);
+};
+
 #if DB ==1
 int main(){
 
@@ -375,14 +399,18 @@ int main(){
 	WV.print_dim();
 	char dir_name[128]="../W20H30_fine";
 	WV.load(dir_name);
-	WV.Butterworth(0.0,3.0);
+	//WV.Butterworth(0.0,3.0);
 
 	//---------------------------------------
-	Array2D Bwv;
+	Array2D Bwv,Tg;
 	Bwv=WV.proj();
 	puts("done");
 	char fn[128]="bwv.out";
 	Bwv.out(fn);
+
+	Tg=WV.gdelay(2.9);
+	sprintf(fn,"tg.out");
+	Tg.out(fn);
 	
 	return(0);
 };

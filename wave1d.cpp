@@ -1,4 +1,4 @@
-#define DB wv1
+#define DB 0
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -150,7 +150,7 @@ void Wv1D::Butterworth(double tb, double Tw_6dB){
 		amp[i]/=(1.+arg);
 	};
 };
-void Wv1D::gdelay(){
+double Wv1D::gdelay(){
 	if(fft_stat==0) FFT(1);
 	tg=(double *)malloc(sizeof(double)*(Nt-1));
 	double *phi=(double *)malloc(sizeof(double)*Nt);
@@ -194,11 +194,16 @@ void Wv1D::gdelay(){
 	// group delay 
 	double df=1./dt/Np;
 	double Cf=PI2*df;
+	double f1=0.05, f2=1.0;
+	int nf1=int(f1/df), nf2=int(f2/df);
 	for(i=0;i<Nt-1;i++){
 		tg[i]=(phi[i+1]-phi[i])/Cf;
-		fprintf(fp,"%lf %lf %lf %lf\n",df*i,tg[i],1./tg[i],phi[i]);
+//		fprintf(fp,"%lf %lf %lf %lf\n",df*i,tg[i],1./tg[i],phi[i]);
 	};
-
+	fclose(fp);
+	double tgb=0.0;
+	for(i=nf1;i<=nf2;i++) tgb+=tg[i];
+	return(tgb/(nf2-nf1+1));
 };
 //------------------------------------------------------------
 Wv1D corr(Wv1D wv1, Wv1D wv2, double *tmax, double *Amax){
@@ -238,12 +243,12 @@ Wv1D corr(Wv1D wv1, Wv1D wv2, double *tmax, double *Amax){
 	return(wv3);
 };
 //---------------------------------------------------------
-#if DB == wv1
+#if DB == 11 
 int main(){
 	char fname[128];
-	sprintf(fname,"../W20H30_fine/scope_%d.csv",40);
+	sprintf(fname,"../W20H30_fine/scope_%d.csv",80);
 	Wv1D awv(fname);
-	awv.Butterworth(16.0,10.0);
+	//awv.Butterworth(16.0,10.0);
 	awv.FFT(1);
 
 	// Output
@@ -251,7 +256,7 @@ int main(){
 	awv.out_amp(fname);
 	sprintf(fname,"awvw.out");
 	awv.out_Amp(fname,0);
-	awv.gdelay();
+	printf("tg=%lf\n",awv.gdelay());
 	return(0);
 };
 #endif
