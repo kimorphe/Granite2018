@@ -1,5 +1,6 @@
 g++ -c fft.cpp
 g++ -c load.cpp
+g++ -c wave1d.cpp
 
-g++ -o load load.o fft.o
+g++ -o load load.o fft.o wave1d.o
 rm *.o

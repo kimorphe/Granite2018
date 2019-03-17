@@ -14,7 +14,7 @@ class Wv1D{
 	public:
 		int Nt; // original data length
 		int Np;	// FFT data length
-		double *amp,*time;
+		double *amp,*time,*tg;
 		complex<double> *Amp;
 		double t1,t2,dt;
 		Wv1D();
@@ -31,6 +31,7 @@ class Wv1D{
 		double L2(double t1,double t2);
 		double max(double t1,double t2);
 		void Butterworth(double tb, double Tw_6dB);
+		void gdelay();
 	private:
 	protected:
 };
