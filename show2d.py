@@ -42,7 +42,8 @@ if __name__=="__main__":
     V1=ave-nsig*stdv;
     V2=ave+nsig*stdv;
     #ax.imshow(amp,aspect="equal",cmap="jet",vmin=-0.3,vmax=0.3,origin="lower",extent=ext,interpolation="bilinear")
-    im=ax.imshow(amp,aspect="equal",cmap="jet",vmin=V1,vmax=V2,origin="lower",extent=ext)
+    im=ax.imshow(amp,aspect="equal",cmap="jet",origin="lower",extent=ext)
+    #im=ax.imshow(amp,aspect="equal",cmap="jet",vmin=V1,vmax=V2,origin="lower",extent=ext)
     ax_div=make_axes_locatable(ax);
     cax=ax_div.append_axes("right",size="5%",pad="2.5%");
     cbar=colorbar(im,cax=cax,orientation="vertical");
@@ -68,6 +69,15 @@ if __name__=="__main__":
     V1=ave-nsig*stdv;
     V2=ave+nsig*stdv;
     ax2[2].imshow(Tg,origin="lower",cmap="jet",aspect="equal",extent=ext,interpolation="bilinear",vmin=V1,vmax=V2);
+
+
+    fig3,bx=plt.subplots(1,1)
+    nums=[0,5,10,15,20,25,30,25,40]
+    tgbx=np.mean(amp,1);
+    for k in nums:
+        bx.plot(amp[:,k])
+    bx.plot(tgbx,"k",linewidth=3);
+    bx.grid(True)
     plt.show()
     
 
