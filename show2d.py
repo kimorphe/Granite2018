@@ -73,10 +73,12 @@ if __name__=="__main__":
 
     fig3,bx=plt.subplots(1,1)
     nums=[0,5,10,15,20,25,30,25,40]
+    nums=range(41);
     tgbx=np.mean(amp,1);
     for k in nums:
-        bx.plot(amp[:,k])
-    bx.plot(tgbx,"k",linewidth=3);
+        amp[:,k]-=tgbx;
+    bx.imshow(amp,cmap="jet");
+    #bx.plot(tgbx,"k",linewidth=3);
     bx.grid(True)
     plt.show()
     
