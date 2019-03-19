@@ -303,7 +303,7 @@ void Array3D::Butterworth(double cx, double cy){
 	int i,j;
 	double x,y;
 	double tb;
-	double Tw_6dB=5.0,dlt=12.5;
+	double Tw_6dB=6.0,dlt=12.5;
 	for(i=0;i<Nx;i++){
 		x=Xa[0]+dx[0]*i;
 	for(j=0;j<Ny;j++){
@@ -322,7 +322,7 @@ Array2D Array3D::gdelay( double cy){
 	Tg.set_Wd();
 	int i,j;
 	double x,y,tb,tgb;
-	double Tw_6dB=3.0,dlt=12.5;
+	double Tw_6dB=6.0,dlt=12.5;
 	for(i=0;i<Nx;i++){
 		printf("i=%d\n",i);
 		x=Xa[0]+dx[0]*i;
@@ -400,6 +400,7 @@ int main(){
 	char dir_name[128]="../W20H30_fine";
 	WV.load(dir_name);
 	//WV.Butterworth(0.0,3.0);
+	WV.Lp(0);
 
 	//---------------------------------------
 	Array2D Bwv,Tg;
@@ -408,7 +409,7 @@ int main(){
 	char fn[128]="bwv.out";
 	Bwv.out(fn);
 
-	Tg=WV.gdelay(2.9);
+	Tg=WV.gdelay(3.0);
 	sprintf(fn,"tg.out");
 	Tg.out(fn);
 	
